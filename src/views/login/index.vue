@@ -10,18 +10,19 @@
         <div class="logo"></div>
       </div>
       <el-form class="login-form"
-               ref="form"
-               :model="user">
-        <el-form-item>
+               ref="login-form"
+               :model="user"
+               :rules="formRules">
+        <el-form-item prop="mobile">
           <el-input v-model="user.mobile"
                     placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <el-input v-model="user.code"
                     placeholder="请输入验证码"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
+        <el-form-item prop='agree'>
+          <el-checkbox v-model="user.agree">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button class="login-btn"
@@ -35,7 +36,7 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -44,10 +45,38 @@ export default {
     return {
       user: {
         mobile: '13911111111', // 手机号
-        code: '246810' // 验证码
+        code: '246810', // 验证码
+        agree: false// 是否同意协议的选中状态
       },
-      checked: false, // 是否同意协议的选中状态
-      loginLoading: false
+      loginLoading: false,
+      formRules: {
+        mobile: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '请输入正确的号码格式', trigger: 'change' }
+        ],
+        code: [
+          { required: true, message: '验证码不能为空', trigger: 'blur' },
+          { pattern: /^\d{6}$/, message: '请输入正确的验证码格式', trigger: 'change' }
+
+        ],
+        agree: [
+          {
+            // 自定义校验规则：https://element.eleme.cn/#/zh-CN/component/form#zi-ding-yi-xiao-yan-gui-ze
+            // 验证通过：callback()
+            // 验证失败：callback(new Error('错误消息'))
+            validator: (rule, value, callback) => {
+              console.log(callback)
+              if (value) {
+                callback()
+              } else {
+                callback(new Error('请同意用户协议'))
+              }
+            },
+            // message: '请勾选同意用户协议',
+            trigger: 'change'
+          }
+        ]
+      }
     }
   },
   computed: {},
@@ -57,25 +86,29 @@ export default {
   methods: {
     onLogin () {
       // 获取表单数据（根据接口要求绑定数据）
-      const user = this.user
 
       // 表单验证
-
+      console.log(this.$refs['login-form'])
+      this.$refs['login-form'].validate((valid, err) => {
+        if (!valid) {
+          return
+        }
+        this.login()
+      })
+    },
+    login () {
       // 验证通过，提交登录
       this.loginLoading = true
-      request({
-        method: 'POST',
-        url: '/mp/v1_0/authorizations',
-        // data 用来设置 POST 请求体
-        data: user
-      }).then(res => {
+      login(this.user).then(res => {
         console.log(res)
         this.$message({
-          message: '恭喜你，这是一条成功消息',
+          message: '登录成功',
           type: 'success'
         })
         // 登录成功
         this.loginLoading = false
+        // this.$router.push('/')
+        this.$router.push({ name: 'home' })
       }).catch(err => {
         console.log('登录失败', err)
         // 登录失败
