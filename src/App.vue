@@ -1,9 +1,17 @@
 <template>
   <div id="app">
-    <h1>后台管理系统</h1>
+    <login></login>
     <router-view />
   </div>
 </template>
+<script>
+import Login from '@/views/login'
 
+export default {
+  components: {
+    Login
+  }
+}
+</script>
 <style lang="less">
 </style>
