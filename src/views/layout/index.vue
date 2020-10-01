@@ -1,13 +1,15 @@
 <template>
   <div class='container'>
     <el-container class="layou-container">
-      <el-aside width="200px">
-        <app-aside class="aside-menu"></app-aside>
+      <el-aside width='auto'>
+        <app-aside class="aside-menu"
+                   :isCollapse="isCollapse"></app-aside>
       </el-aside>
       <el-container>
         <el-header>
           <div>
-            <i class="el-icon-s-fold"></i>
+            <i :class="{'el-icon-s-fold':isCollapse,'el-icon-s-unfold':!isCollapse}"
+               @click="isCollapse=!isCollapse"></i>
             <span>头条后台文章管理系统</span>
           </div>
           <el-dropdown>
@@ -21,7 +23,7 @@
             </span> -->
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>设置</el-dropdown-item>
-              <el-dropdown-item>退出</el-dropdown-item>
+              <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-header>
@@ -46,7 +48,8 @@ export default {
   },
   data () {
     return {
-      user: {}
+      user: {},
+      isCollapse: false // 侧边栏展开状态
     }
   },
 
@@ -66,6 +69,21 @@ export default {
       } catch (error) {
 
       }
+    },
+    onLogout () {
+      this.$confirm('确认退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.localStorage.removeItem('user')
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
+      })
     }
   },
 

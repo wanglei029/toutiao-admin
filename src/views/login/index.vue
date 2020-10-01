@@ -107,6 +107,7 @@ export default {
         })
         // 登录成功
         this.loginLoading = false
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
         // this.$router.push('/')
         this.$router.push({ name: 'home' })
       }).catch(err => {
