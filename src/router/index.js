@@ -19,6 +19,36 @@ const routes = [
         path: '',
         name: 'home',
         component: () => import('@/views/home/')
+      },
+      {
+        path: '/article',
+        name: 'article',
+        component: () => import('@/views/article/')
+      },
+      {
+        path: 'publish',
+        name: 'publish',
+        component: () => import('@/views/publish/')
+      },
+      {
+        path: 'image',
+        name: 'image',
+        component: () => import('@/views/image/image.vue')
+      },
+      {
+        path: 'comment',
+        name: 'comment',
+        component: () => import('@/views/comment/')
+      },
+      {
+        path: 'fans',
+        name: 'fans',
+        component: () => import('@/views/fans/')
+      },
+      {
+        path: 'setting',
+        name: 'setting',
+        component: () => import('@/views/setting/')
       }
     ]
   }
