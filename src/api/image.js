@@ -9,3 +9,28 @@ export const uploadImage = (data) => {
     data
   })
 }
+/* 获取图片素材 */
+export const getImages = (params) => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/user/images',
+    params
+  })
+}
+/* 收藏图片素材 */
+export const collectImages = (id, collect) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/user/images/${id}`,
+    data: {
+      collect
+    }
+  })
+}
+/* 收藏图片素材 */
+export const deleteImage = (id) => {
+  return request({
+    method: 'DELETE',
+    url: `/mp/v1_0/user/images/${id}`
+  })
+}
